@@ -1,11 +1,10 @@
 package com.example.kim.coolweather;
 
-import android.app.Fragment;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
+
 /**
  * Created by Kim on 2017/4/22.
  */
@@ -53,7 +53,8 @@ public class ChooseAreaFragment extends Fragment {
     private City selectedCity;
     private int currentLevel;
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,10 +75,30 @@ public class ChooseAreaFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel==LEVEL_PROVINCE){
                     selectedProvince=provinceList.get(position);
-
+                    queryCities();
+                }else if (currentLevel==LEVEL_CITY){
+                    selectedCity=cityList.get(position);
+                    queryCounties();
+                }else if (currentLevel==LEVEL_COUNTY){
+                    String weatherId=countyList.get(position).getWeatherId();
+                    Intent intent=new Intent(getActivity(),WeatherActivity.class);
+                    intent.putExtra("weather_id",weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentLevel==LEVEL_COUNTY){
+                    queryCities();
+                }else if (currentLevel==LEVEL_CITY){
+                    queryProvinces();
+                }
+            }
+        });
+        queryProvinces();
     }
     private void queryProvinces(){
         titleText.setText("中国");
@@ -173,7 +194,6 @@ public class ChooseAreaFragment extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
                     @Override
                     public void run() {
                         closeProgressDialog();

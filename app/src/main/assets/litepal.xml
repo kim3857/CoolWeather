@@ -6,7 +6,7 @@
         <list>
             <mapping class="com.example.kim.coolweather.db.Province"/>
             <mapping class="com.example.kim.coolweather.db.City"/>
-            <mapping class="com.example.kim.coolweather.db.county"/>
+            <mapping class="com.example.kim.coolweather.db.County"/>
         </list>
     </litepal>
 </resources>

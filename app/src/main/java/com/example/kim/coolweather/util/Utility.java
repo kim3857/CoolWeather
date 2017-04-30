@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.example.kim.coolweather.db.City;
 import com.example.kim.coolweather.db.County;
 import com.example.kim.coolweather.db.Province;
+import com.example.kim.coolweather.gson.Weather;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +30,8 @@ public class Utility {
                     province.setProvinceName(provinceObject.getString("name"));
                     province.setProvinceCode(provinceObject.getInt("id"));
                     province.save();
-                }return true;
+                }
+                return true;
             }catch (JSONException e){
                e.printStackTrace();
             }
@@ -73,4 +76,16 @@ public class Utility {
         }
         return false;
     }
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject=new JSONObject(response);
+            JSONArray jsonArray=jsonObject.getJSONArray("HeWeather");
+            String weatherContent=jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
